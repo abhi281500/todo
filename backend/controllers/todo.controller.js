@@ -1,32 +1,72 @@
-import { todo } from "../models/todo.model";
-import express from express
+import { Todo } from "../models/todo.model.js";
+
+export const createTodo = async (req, res) => {
+    try {
+        const { title, completed } = req.body;
+        const newTodo = new Todo({ title, completed })
+        await newTodo.save()
+        res
+            .status(201)
+            .json(newTodo)
+
+    }
+    catch (error) {
+        res
+            .status(400)
+            .json({ error: error.message });
+    }
+
+}
 
 
-const app = express();
+export const getTodos = async (req, res) => {
+    try {
+        const todos = await Todo.find()
+        res
+            .status(200)
+            .json(todos)
+    }
+    catch (error) {
+        res
+            .status(500)
+            .json({ error: error.message });
 
-app.post('/todos',express.json(),async (req,res)=>{
-    const {title , completed} =req.body;
-    const newTodo = newTodo({
-        title,completed
-    })
-    await newTodo.save()
-    res.send('todo added')
-})
+    }
+}
+
+export const updateTodo = async (req, res) => {
+
+    try {
+        const { title, completed } = req.body;
+        const { id } = req.params;
+        const updated = await Todo.findByIdAndUpdate(id, req.body, { new: true });
+        res
+            .status(200)
+            .json(updated)
+    }
+    catch (error) {
+        res
+            .status(400)
+            .json({ error: error.message });
 
 
-app.get('/todos',express.json(),async (req,res)=>{
-    await 
-    res.send('todo added')
-})
+    }
+}
 
-app.put('/todos',express.json(),async (req,res)=>{
-    await 
-    res.send('todo added')
-})
+export const deleteTodo = async (req, res) => {
+    try {
+        const { id } = req.params
+        await Todo.findByIdAndDelete(id)
+        res
+            .status(200)
+            .json({ message: "Deleted successfully" });
+    }
+    catch (error) {
+        res
+            .status(400)
+            .json({ error: error.message });
 
-app.delete('/todos',express.json(),async (req,res)=>{
-    await 
-    res.send('todo added')
-})
+    }
+}
 
 

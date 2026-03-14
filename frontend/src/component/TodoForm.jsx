@@ -1,60 +1,107 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import TodoList from './TodoList'
+import axios from "axios"
 
 function TodoForm() {
-  const [text , setText] =useState("")
-  const [todo , setTodo] =useState([])
+  const [text, setText] = useState("")
+  const [todo, setTodo] = useState([])
 
 
- const addTodo = () =>{
-  if(text.trim() === "") return
 
-  const newTodo = {
- id: Date.now(),
- text: text,
- completed: false
-}
-    setTodo([...todo,newTodo])
-    setText("")  
+
+  useEffect(() => {
+    const fetchTodos = async () => {
+      const res = await axios.get(
+        "http://localhost:3000/api/v1/todos"
+      )
+      setTodo(res.data)
+    }
+
+    fetchTodos()
+
+  }, [])
+
+
+  const addTodo = async () => {
+    if (text.trim() === "") return
+
+    const res = await axios.post(
+      "http://localhost:3000/api/v1/todos",
+      { title: text }   //   Matlab backend request body me title expect karta hai.
+    )
+
+
+    setTodo([...todo, res.data])
+    setText("")
   }
 
- const updateTodo =(id,newText) =>{
-  setTodo(
-  todo.map(t =>
-    t.id === id
-      ? {...t, text: newText}
-      : t
-  )
-)
- }
- const completeTodo = (id) => {
+  const updateTodo = async (id, newText) => {
+
+    const res = await axios.put(
+      `http://localhost:3000/api/v1/todos/${id}`,
+      { title: newText }
+    )
+
     setTodo(
-  todo.map(t =>
-    t.id === id
-      ? {...t, completed: !t.completed}
-      : t
-  )
-)
- }
- const deleteTodo = (id) => {
-  setTodo(todo.filter(t =>t.id !==id))
+      todo.map(t =>
+        t._id === id ? res.data : t
+      )
+    )
+  }
 
- }
+
+  const completeTodo = async (id, completed) => {
+
+    const res = await axios.put(
+      `http://localhost:3000/api/v1/todos/${id}`,
+      { completed: !completed }
+    )
+
+    setTodo(
+      todo.map(t =>
+        t._id === id ? res.data : t
+      )
+    )
+  }
+
+
+
+  const deleteTodo = async (id) => {
+    await axios.delete(
+      `http://localhost:3000/api/v1/todos/${id}`
+    )
+    setTodo(todo.filter(t => t._id !== id))
+
+  }
   return (
-    <div>
+  <div className="todo-container"> {/* CSS Class added */}
+    <h2 style={{ textAlign: 'center', color: '#333' }}>My Tasks 📝</h2>
+    
+    <div style={{ display: 'flex', marginBottom: '10px' }}>
       <input
-      value={text}
-      placeholder='Add new todo'
-      onChange={(e) => setText(e.target.value)}/>
-
-     <button onClick={addTodo}>Add todo</button>
-      <TodoList todos={todo}
-        updateTodo = {updateTodo}
-        completeTodo = {completeTodo}
-        deleteTodo ={deleteTodo}
+        className="todo-input" // CSS Class added
+        value={text}
+        placeholder='Add new todo'
+        onChange={(e) => setText(e.target.value)} 
       />
-      </div>
-  )
+
+      <button
+        className="add-btn" // CSS Class added
+        disabled={!text.trim()}
+        onClick={addTodo}
+      >
+        Add
+      </button>
+    </div>
+
+    <TodoList 
+      todos={todo}
+      updateTodo={updateTodo}
+      completeTodo={completeTodo}
+      deleteTodo={deleteTodo}
+    />
+  </div>
+)
 }
 
 export default TodoForm
