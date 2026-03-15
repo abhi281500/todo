@@ -14,7 +14,9 @@ app.use(cors());
 app.use(morgan('dev')); 
 app.use(express.json());
 
-
+app.get("/", (req, res) => {
+  res.send("Todo API working ");
+});
 app.use('/api/v1/todos', todoRoutes);
 
 const port = process.env.PORT || 3000;
