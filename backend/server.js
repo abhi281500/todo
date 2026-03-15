@@ -15,7 +15,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Todo API working ");
+    res.send("Todo API is running 🚀");
 });
 app.use('/api/v1/todos', todoRoutes);
 
