@@ -12,7 +12,7 @@ function TodoForm() {
   useEffect(() => {
     const fetchTodos = async () => {
       const res = await axios.get(
-        "http://localhost:3000/api/v1/todos"
+        "https://todo-vh4w.onrender.com/api/v1/todos"
       )
       setTodo(res.data)
     }
@@ -26,7 +26,7 @@ function TodoForm() {
     if (text.trim() === "") return
 
     const res = await axios.post(
-      "http://localhost:3000/api/v1/todos",
+      "https://todo-vh4w.onrender.com/api/v1/todos",
       { title: text }   //   Matlab backend request body me title expect karta hai.
     )
 
@@ -38,7 +38,7 @@ function TodoForm() {
   const updateTodo = async (id, newText) => {
 
     const res = await axios.put(
-      `http://localhost:3000/api/v1/todos/${id}`,
+      `https://todo-vh4w.onrender.com/api/v1/todos/${id}`,
       { title: newText }
     )
 
@@ -53,7 +53,7 @@ function TodoForm() {
   const completeTodo = async (id, completed) => {
 
     const res = await axios.put(
-      `http://localhost:3000/api/v1/todos/${id}`,
+      `https://todo-vh4w.onrender.com/api/v1/todos/${id}`,
       { completed: !completed }
     )
 
@@ -68,7 +68,7 @@ function TodoForm() {
 
   const deleteTodo = async (id) => {
     await axios.delete(
-      `http://localhost:3000/api/v1/todos/${id}`
+      `https://todo-vh4w.onrender.com/api/v1/todos/${id}`
     )
     setTodo(todo.filter(t => t._id !== id))
 
